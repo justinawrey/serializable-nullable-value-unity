@@ -1,62 +1,65 @@
 using System;
 using UnityEngine;
 
-[Serializable]
-public struct SerializableNullable<T>
-    where T : struct
+namespace SerializableNullable
 {
-    public T Value
+    [Serializable]
+    public struct SerializableNullable<T>
+        where T : struct
     {
-        get
+        public T Value
         {
-            if (!_hasValue)
+            get
             {
-                throw new System.InvalidOperationException(
-                    "SerializableNullable<T> object must have a value."
-                );
+                if (!_hasValue)
+                {
+                    throw new System.InvalidOperationException(
+                        "SerializableNullable<T> object must have a value."
+                    );
+                }
+
+                return _val;
+            }
+        }
+
+        public bool HasValue => _hasValue;
+
+        [SerializeField]
+        private T _val;
+
+        [SerializeField]
+        private bool _hasValue;
+
+        public override string ToString()
+        {
+            return _hasValue ? _val.ToString() : "Null";
+        }
+
+        public SerializableNullable(T initialVal)
+        {
+            _val = initialVal;
+            _hasValue = true;
+        }
+
+        public SerializableNullable(T initialVal, bool hasValue)
+        {
+            _val = initialVal;
+            _hasValue = hasValue;
+        }
+
+        public static implicit operator SerializableNullable<T>(T? value)
+        {
+            if (value is T notNullValue)
+            {
+                return new SerializableNullable<T>(notNullValue, true);
             }
 
-            return _val;
+            return new SerializableNullable<T>(default(T), false);
         }
-    }
 
-    public bool HasValue => _hasValue;
-
-    [SerializeField]
-    private T _val;
-
-    [SerializeField]
-    private bool _hasValue;
-
-    public override string ToString()
-    {
-        return _hasValue ? _val.ToString() : "Null";
-    }
-
-    public SerializableNullable(T initialVal)
-    {
-        _val = initialVal;
-        _hasValue = true;
-    }
-
-    public SerializableNullable(T initialVal, bool hasValue)
-    {
-        _val = initialVal;
-        _hasValue = hasValue;
-    }
-
-    public static implicit operator SerializableNullable<T>(T? value)
-    {
-        if (value is T notNullValue)
+        public static implicit operator T?(SerializableNullable<T> value)
         {
-            return new SerializableNullable<T>(notNullValue, true);
+            return value.HasValue ? (T?)value.Value : null;
         }
-
-        return new SerializableNullable<T>(default(T), false);
-    }
-
-    public static implicit operator T?(SerializableNullable<T> value)
-    {
-        return value.HasValue ? (T?)value.Value : null;
     }
 }
