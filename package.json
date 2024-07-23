@@ -1,0 +1,11 @@
+{
+  "name": "com.blueoyster.serializable-nullable-value-unity",
+  "version": "0.1.0",
+  "description": "Serializable nullable value type.",
+  "displayName": "serializable-nullable-value-unity",
+  "author": {
+    "name": "Justin Awrey",
+    "email": "justin@justinawrey.com",
+    "url": "https://justinawrey.com"
+  }
+}
